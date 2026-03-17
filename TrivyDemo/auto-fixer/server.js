@@ -9,7 +9,6 @@ app.use(cors());
 app.use(express.json());
 
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
-//const GROQ_API_KEY = "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"; // ← paste your Groq key here
 const POM_PATH = path.join(__dirname, "..", "pom.xml");
 
 // Step 1: Run Trivy and return report

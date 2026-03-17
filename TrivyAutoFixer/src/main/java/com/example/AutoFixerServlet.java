@@ -13,7 +13,6 @@ import java.nio.file.*;
 public class AutoFixerServlet extends HttpServlet {
 
 	private static final String GROQ_API_KEY = System.getenv("GROQ_API_KEY");
-	//private static final String GROQ_API_KEY = "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";
     private static final String PROJECT_PATH = "C:/Users/hp/eclipse-workspace/newworkplace/TrivyDemo";
 
     @Override
