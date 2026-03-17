@@ -32,96 +32,77 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
+          echo "Checking secret..."
           if [ -z "$GROQ_API_KEY" ]; then
-            echo "ERROR: GROQ_API_KEY secret is empty!"
+            echo "ERROR: Secret is empty!"
             exit 1
           else
-            echo "GROQ_API_KEY is set correctly"
+            echo "Secret is set, length: ${#GROQ_API_KEY}"
           fi
 
-          python3 - << 'PYEOF'
-          import json
-          import urllib.request
-          import urllib.error
-          import os
+          cat > fix.py << PYEOF
+          import json, urllib.request, urllib.error, os, sys
 
-          groq_key = os.environ.get("GROQ_API_KEY", "")
-          print(f"Key length: {len(groq_key)}")
+          groq_key = "$GROQ_API_KEY"
+          print("Key length: " + str(len(groq_key)))
 
-          # Read Trivy report
           with open("trivy-report.json") as f:
               report = f.read()
-          print("Report read successfully")
 
-          # Read pom.xml
           with open("TrivyDemo/pom.xml") as f:
               pom = f.read()
-          print("pom.xml read successfully")
 
-          # Build prompt
-          prompt = (
-              "You are a Java security expert. "
-              "Here is the Trivy vulnerability report: " + report + " "
-              "Here is the current pom.xml: " + pom + " "
-              "Respond ONLY in this exact JSON format with no markdown: "
-              "{\"updatedPom\": \"complete fixed pom.xml with \\n for newlines\"}"
-          )
+          report_clean = report.replace("\\", "").replace('"', "'").replace("\n", " ")
+          pom_clean = pom.replace("\\", "").replace('"', "'").replace("\n", " ")
 
-          # Clean prompt
-          prompt = prompt.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\r", "\\r").replace("\t", " ")
-
-          body = (
-              '{"model":"llama-3.3-70b-versatile","temperature":0.1,'
-              '"messages":['
-              '{"role":"system","content":"Only respond with valid JSON."},'
-              '{"role":"user","content":"' + prompt + '"}'
-              ']}'
-          )
+          body = json.dumps({
+              "model": "llama-3.3-70b-versatile",
+              "temperature": 0.1,
+              "messages": [
+                  {"role": "system", "content": "Only respond with valid JSON. No markdown."},
+                  {"role": "user", "content": "Fix vulnerabilities in this pom.xml. Report: " + report_clean + " pom.xml: " + pom_clean + " Respond ONLY: {\"updatedPom\": \"complete fixed pom.xml with newlines as \\\\n\"}"}
+              ]
+          }).encode("utf-8")
 
           req = urllib.request.Request(
               "https://api.groq.com/openai/v1/chat/completions",
-              data=body.encode("utf-8"),
-              headers={
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer " + groq_key
-              },
+              data=body,
+              headers={"Content-Type": "application/json", "Authorization": "Bearer " + groq_key},
               method="POST"
           )
 
           try:
-              with urllib.request.urlopen(req) as response:
-                  data = json.loads(response.read().decode("utf-8"))
-                  print("Groq responded successfully")
+              with urllib.request.urlopen(req) as res:
+                  data = json.loads(res.read().decode())
+                  print("Groq responded!")
           except urllib.error.HTTPError as e:
-              print(f"HTTP Error: {e.code} {e.reason}")
-              print(e.read().decode())
-              exit(1)
+              print("Error: " + str(e.code) + " " + e.read().decode())
+              sys.exit(1)
 
           content = data["choices"][0]["message"]["content"]
-          content = content.replace("```json", "").replace("```", "").strip()
-          start = content.index("{")
-          end = content.rindex("}") + 1
-          parsed = json.loads(content[start:end])
+          content = content.replace("\`\`\`json", "").replace("\`\`\`", "").strip()
+          parsed = json.loads(content[content.index("{"):content.rindex("}")+1])
           fixed_pom = parsed["updatedPom"].replace("\\n", "\n")
 
           with open("TrivyDemo/pom.xml", "w") as f:
               f.write(fixed_pom)
-
-          print("pom.xml successfully updated!")
+          print("pom.xml updated!")
           PYEOF
+
+          python3 fix.py
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "fix: auto-fix vulnerabilities detected by Trivy"
-          title: "Auto-Fix: Vulnerabilities detected and fixed by AI"
+          title: " Auto-Fix: Vulnerabilities detected and fixed by AI"
           body: |
             ## Automatic Security Fix
-            
+
             Trivy detected vulnerabilities in `pom.xml`.
             Groq AI has automatically updated the dependency versions to safe versions.
-            
+
             Please review and merge.
           branch: auto-fix-vulnerabilities
           base: main
