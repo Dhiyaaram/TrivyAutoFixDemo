@@ -26,7 +26,6 @@ jobs:
         run: |
           trivy fs TrivyDemo/pom.xml --severity HIGH,CRITICAL --format json -o trivy-report.json || true
           echo "Trivy scan complete"
-          cat trivy-report.json
 
       - name: Fix with Groq AI
         env:
@@ -34,37 +33,73 @@ jobs:
         run: |
           echo "Secret length: ${#GROQ_API_KEY}"
 
-          REPORT=$(cat trivy-report.json | tr -d '\n' | tr -d '"' | tr -d "'")
-          POM=$(cat TrivyDemo/pom.xml | tr -d '\n' | tr -d '"' | tr -d "'")
+          python3 << 'PYEOF'
+          import json, urllib.request, urllib.error, sys, os
 
-          RESPONSE=$(curl -s -X POST \
-            "https://api.groq.com/openai/v1/chat/completions" \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $GROQ_API_KEY" \
-            -d "{
-              \"model\": \"llama-3.3-70b-versatile\",
-              \"temperature\": 0.1,
-              \"messages\": [
-                {\"role\": \"system\", \"content\": \"You are a Java security expert. Only respond with valid JSON.\"},
-                {\"role\": \"user\", \"content\": \"Fix vulnerabilities. Trivy report: $REPORT pom.xml: $POM Respond ONLY: {updatedPom: complete fixed pom.xml with newlines as literal newlines}\"}
+          groq_key = os.environ["GROQ_API_KEY"]
+          print("Key length: " + str(len(groq_key)))
+
+          with open("TrivyDemo/pom.xml") as f:
+              pom = f.read()
+
+          with open("trivy-report.json") as f:
+              report = json.load(f)
+
+          # Extract just vulnerability names from report
+          vulns = []
+          for result in report.get("Results", []):
+              for v in result.get("Vulnerabilities", []):
+                  vulns.append(v.get("VulnerabilityID","") + " " + v.get("PkgName","") + " " + v.get("InstalledVersion","") + " fixed:" + str(v.get("FixedVersion","")))
+
+          vuln_text = ", ".join(vulns) if vulns else "no vulnerabilities"
+          print("Vulnerabilities: " + vuln_text)
+
+          message = (
+              "Fix these vulnerabilities in the pom.xml: " + vuln_text +
+              "\n\nCurrent pom.xml:\n" + pom +
+              "\n\nRespond ONLY with this JSON and nothing else: " +
+              '{"updatedPom": "the complete fixed pom.xml content"}'
+          )
+
+          body = json.dumps({
+              "model": "llama-3.3-70b-versatile",
+              "temperature": 0.1,
+              "messages": [
+                  {"role": "system", "content": "You are a Java security expert. Only respond with valid JSON. No markdown."},
+                  {"role": "user", "content": message}
               ]
-            }")
+          }).encode("utf-8")
 
-          echo "Groq response received"
-          echo "$RESPONSE"
-          echo "$RESPONSE" | python3 -c "
-          import sys, json
-          data = json.load(sys.stdin)
-          content = data['choices'][0]['message']['content']
-          content = content.replace('\`\`\`json','').replace('\`\`\`','').strip()
-          start = content.index('{')
-          end = content.rindex('}') + 1
+          req = urllib.request.Request(
+              "https://api.groq.com/openai/v1/chat/completions",
+              data=body,
+              headers={
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer " + groq_key
+              },
+              method="POST"
+          )
+
+          try:
+              with urllib.request.urlopen(req) as res:
+                  data = json.loads(res.read().decode())
+                  print("Groq responded successfully!")
+          except urllib.error.HTTPError as e:
+              print("HTTP Error: " + str(e.code))
+              print(e.read().decode())
+              sys.exit(1)
+
+          content = data["choices"][0]["message"]["content"]
+          content = content.replace("```json", "").replace("```", "").strip()
+          start = content.index("{")
+          end = content.rindex("}") + 1
           parsed = json.loads(content[start:end])
-          pom = parsed.get('updatedPom', '')
-          with open('TrivyDemo/pom.xml', 'w') as f:
-              f.write(pom)
-          print('pom.xml updated!')
-          "
+          fixed_pom = parsed["updatedPom"].replace("\\n", "\n")
+
+          with open("TrivyDemo/pom.xml", "w") as f:
+              f.write(fixed_pom)
+          print("pom.xml updated successfully!")
+          PYEOF
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
