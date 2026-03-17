@@ -32,64 +32,38 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          echo "Checking secret..."
-          if [ -z "$GROQ_API_KEY" ]; then
-            echo "ERROR: Secret is empty!"
-            exit 1
-          else
-            echo "Secret is set, length: ${#GROQ_API_KEY}"
-          fi
+          echo "Secret length: ${#GROQ_API_KEY}"
 
-          cat > fix.py << PYEOF
-          import json, urllib.request, urllib.error, os, sys
+          REPORT=$(cat trivy-report.json | tr -d '\n' | tr -d '"' | tr -d "'")
+          POM=$(cat TrivyDemo/pom.xml | tr -d '\n' | tr -d '"' | tr -d "'")
 
-          groq_key = "$GROQ_API_KEY"
-          print("Key length: " + str(len(groq_key)))
-
-          with open("trivy-report.json") as f:
-              report = f.read()
-
-          with open("TrivyDemo/pom.xml") as f:
-              pom = f.read()
-
-          report_clean = report.replace("\n", " ").replace('"', "'")
-          pom_clean = pom.replace("\n", " ").replace('"', "'")
-
-          body = json.dumps({
-              "model": "llama-3.3-70b-versatile",
-              "temperature": 0.1,
-              "messages": [
-                  {"role": "system", "content": "Only respond with valid JSON. No markdown."},
-                  {"role": "user", "content": "Fix vulnerabilities in this pom.xml. Report: " + report_clean + " pom.xml: " + pom_clean + " Respond ONLY: {\"updatedPom\": \"complete fixed pom.xml with newlines as \\\\n\"}"}
+          RESPONSE=$(curl -s -X POST \
+            "https://api.groq.com/openai/v1/chat/completions" \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Bearer $GROQ_API_KEY" \
+            -d "{
+              \"model\": \"llama-3.3-70b-versatile\",
+              \"temperature\": 0.1,
+              \"messages\": [
+                {\"role\": \"system\", \"content\": \"You are a Java security expert. Only respond with valid JSON.\"},
+                {\"role\": \"user\", \"content\": \"Fix vulnerabilities. Trivy report: $REPORT pom.xml: $POM Respond ONLY: {updatedPom: complete fixed pom.xml with newlines as literal newlines}\"}
               ]
-          }).encode("utf-8")
+            }")
 
-          req = urllib.request.Request(
-              "https://api.groq.com/openai/v1/chat/completions",
-              data=body,
-              headers={"Content-Type": "application/json", "Authorization": "Bearer " + groq_key},
-              method="POST"
-          )
-
-          try:
-              with urllib.request.urlopen(req) as res:
-                  data = json.loads(res.read().decode())
-                  print("Groq responded!")
-          except urllib.error.HTTPError as e:
-              print("Error: " + str(e.code) + " " + e.read().decode())
-              sys.exit(1)
-
-          content = data["choices"][0]["message"]["content"]
-          content = content.replace("\`\`\`json", "").replace("\`\`\`", "").strip()
-          parsed = json.loads(content[content.index("{"):content.rindex("}")+1])
-          fixed_pom = parsed["updatedPom"].replace("\\n", "\n")
-
-          with open("TrivyDemo/pom.xml", "w") as f:
-              f.write(fixed_pom)
-          print("pom.xml updated!")
-          PYEOF
-
-          python3 fix.py
+          echo "Groq response received"
+          echo "$RESPONSE" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          content = data['choices'][0]['message']['content']
+          content = content.replace('\`\`\`json','').replace('\`\`\`','').strip()
+          start = content.index('{')
+          end = content.rindex('}') + 1
+          parsed = json.loads(content[start:end])
+          pom = parsed.get('updatedPom', '')
+          with open('TrivyDemo/pom.xml', 'w') as f:
+              f.write(pom)
+          print('pom.xml updated!')
+          "
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
