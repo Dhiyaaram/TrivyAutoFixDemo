@@ -74,6 +74,7 @@ jobs:
 
           print("pom.xml updated!")
           EOF
+          if [ -z "$GROQ_API_KEY" ]; then echo "SECRET IS EMPTY!"; else echo "SECRET IS SET"; fi
           python3 fix.py
 
       - name: Create Pull Request
