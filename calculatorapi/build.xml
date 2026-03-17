@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="CalculatorApi" default="all" basedir="."
+         xmlns:ivy="antlib:org.apache.ivy.ant">
+
+    <property name="src.main.dir"     value="src/main/java"/>
+    <property name="src.test.dir"     value="src/test/java"/>
+    <property name="web.dir"          value="src/main/webapp"/>
+
+    <property name="build.dir"        value="build"/>
+    <property name="classes.main.dir" value="${build.dir}/classes/main"/>
+    <property name="classes.test.dir" value="${build.dir}/classes/test"/>
+    <property name="test.results.dir" value="${build.dir}/test-results"/>
+    <property name="test.report.dir"  value="${build.dir}/test-report"/>
+    <property name="dist.dir"         value="${build.dir}/dist"/>
+    <property name="sbom.dir"         value="${build.dir}/sbom"/>
+
+    <property name="lib.dir"          value="lib"/>
+    <property name="lib.compile.dir"  value="${lib.dir}/compile"/>
+    <property name="lib.provided.dir" value="${lib.dir}/provided"/>
+    <property name="lib.test.dir"     value="${lib.dir}/test"/>
+
+    <property name="war.name"         value="CalculatorApi.war"/>
+
+    <property name="java.source"      value="17"/>
+    <property name="java.target"      value="17"/>
+
+
+    <path id="classpath.compile">
+        <fileset dir="${lib.compile.dir}"  includes="*.jar" erroronmissingdir="false"/>
+        <fileset dir="${lib.provided.dir}" includes="*.jar" erroronmissingdir="false"/>
+    </path>
+
+    <path id="classpath.test.compile">
+        <path refid="classpath.compile"/>
+        <fileset dir="${lib.test.dir}" includes="*.jar" erroronmissingdir="false"/>
+        <pathelement location="${classes.main.dir}"/>
+    </path>
+
+    <path id="classpath.test.run">
+        <path refid="classpath.test.compile"/>
+        <pathelement location="${classes.test.dir}"/>
+    </path>
+
+
+    <target name="clean"
+            description="Delete all generated build directories">
+        <echo message="[clean] Removing build directory..."/>
+        <delete dir="${build.dir}" verbose="false"/>
+        <echo message="[clean] Done."/>
+    </target>
+
+
+    <target name="resolve"
+            description="Download all dependencies declared in ivy.xml">
+        <echo message="[resolve] Fetching dependencies via Ivy..."/>
+
+        <mkdir dir="${lib.compile.dir}"/>
+        <mkdir dir="${lib.provided.dir}"/>
+        <mkdir dir="${lib.test.dir}"/>
+
+        <ivy:retrieve
+            pattern="${lib.compile.dir}/[artifact]-[revision].[ext]"
+            conf="compile"
+            sync="true"/>
+
+        <ivy:retrieve
+            pattern="${lib.provided.dir}/[artifact]-[revision].[ext]"
+            conf="provided"
+            sync="true"/>
+
+        <ivy:retrieve
+            pattern="${lib.test.dir}/[artifact]-[revision].[ext]"
+            conf="test"
+            sync="true"/>
+
+        <echo message="[resolve] Dependencies ready."/>
+    </target>
+
+
+    <target name="compile" depends="resolve"
+            description="Compile main application source files">
+        <echo message="[compile] Compiling main sources..."/>
+
+        <mkdir dir="${classes.main.dir}"/>
+
+        <javac srcdir="${src.main.dir}"
+               destdir="${classes.main.dir}"
+               source="${java.source}"
+               target="${java.target}"
+               encoding="UTF-8"
+               includeantruntime="false"
+               debug="true"
+               debuglevel="lines,vars,source">
+            <classpath refid="classpath.compile"/>
+            <compilerarg value="-Xlint:all"/>
+        </javac>
+
+        <echo message="[compile] Main sources compiled successfully."/>
+    </target>
+
+
+    <target name="compile-test" depends="compile"
+            description="Compile test source files">
+        <echo message="[compile-test] Compiling test sources..."/>
+
+        <mkdir dir="${classes.test.dir}"/>
+
+        <javac srcdir="${src.test.dir}"
+               destdir="${classes.test.dir}"
+               source="${java.source}"
+               target="${java.target}"
+               encoding="UTF-8"
+               includeantruntime="false"
+               debug="true">
+            <classpath refid="classpath.test.compile"/>
+        </javac>
+
+        <echo message="[compile-test] Test sources compiled successfully."/>
+    </target>
+
+
+    <target name="test" depends="compile-test"
+            description="Run all JUnit 5 tests and write XML results">
+        <echo message="[test] Running tests..."/>
+
+        <mkdir dir="${test.results.dir}"/>
+
+        <java classname="org.junit.platform.console.ConsoleLauncher"
+              fork="true"
+              failonerror="false"
+              resultproperty="test.result.code">
+
+            <classpath refid="classpath.test.run"/>
+
+            <arg value="--scan-class-path=${classes.test.dir}"/>
+            <arg value="--reports-dir=${test.results.dir}"/>
+            <arg value="--details=tree"/>
+        </java>
+
+        <echo message="[test] Tests finished. XML results in: ${test.results.dir}"/>
+    </target>
+
+
+    <target name="report" depends="test"
+            description="Generate a human-readable HTML test report from XML results">
+        <echo message="[report] Generating HTML test report..."/>
+
+        <mkdir dir="${test.report.dir}"/>
+
+        <junitreport todir="${test.report.dir}">
+            <fileset dir="${test.results.dir}" includes="TEST-*.xml"/>
+            <report format="frames" todir="${test.report.dir}"/>
+        </junitreport>
+
+        <echo message="[report] HTML report ready → open: ${test.report.dir}/index.html"/>
+
+        <fail message="[report] BUILD FAILED — one or more tests did not pass."
+              if="test.failure"/>
+    </target>
+
+
+    <target name="scan" depends="resolve"
+            description="Scan dependencies for security vulnerabilities using Trivy">
+
+        <echo message="[scan] Scanning dependencies for vulnerabilities..."/>
+
+        <exec executable="C:\trivy\trivy.exe"
+              failonerror="false"
+              resultproperty="trivy.result">
+            <arg value="fs"/>
+            <arg value="--scanners"/>
+            <arg value="vuln"/>
+            <arg value="--severity"/>
+            <arg value="CRITICAL,HIGH"/>
+            <arg value="--exit-code"/>
+            <arg value="1"/>
+            <arg value="."/>
+        </exec>
+
+        <condition property="trivy.failed">
+            <not>
+                <equals arg1="${trivy.result}" arg2="0"/>
+            </not>
+        </condition>
+
+        <fail message="[scan] BUILD FAILED — CRITICAL or HIGH vulnerabilities found in dependencies. Check output above."
+              if="trivy.failed"/>
+
+        <echo message="[scan] No CRITICAL or HIGH vulnerabilities found."/>
+
+    </target>
+
+    <target name="sbom" depends="resolve"
+            description="Generate SBOM in CycloneDX and SPDX formats using Trivy">
+
+        <echo message="[sbom] Generating Software Bill of Materials..."/>
+
+        <mkdir dir="${sbom.dir}"/>
+
+        <echo message="[sbom] Generating CycloneDX JSON..."/>
+        <exec executable="C:\trivy\trivy.exe"
+              failonerror="true">
+            <arg value="fs"/>
+            <arg value="--format"/>
+            <arg value="cyclonedx"/>
+            <arg value="--output"/>
+            <arg value="${sbom.dir}/sbom-cyclonedx.json"/>
+            <arg value="."/>
+        </exec>
+        <echo message="[sbom] SBOM files ready:"/>
+        <echo message="       CycloneDX → ${sbom.dir}/sbom-cyclonedx.json"/>
+      
+
+    </target>
+
+
+    <target name="war" depends="compile"
+            description="Package the application as a deployable WAR file">
+        <echo message="[war] Building WAR: ${war.name}"/>
+
+        <mkdir dir="${dist.dir}"/>
+
+        <war destfile="${dist.dir}/${war.name}"
+             webxml="${web.dir}/WEB-INF/web.xml">
+
+            <fileset dir="${web.dir}">
+                <exclude name="WEB-INF/web.xml"/>
+            </fileset>
+
+            <classes dir="${classes.main.dir}"/>
+
+            <lib dir="${lib.compile.dir}" includes="*.jar"/>
+
+        </war>
+
+        <echo message="[war] WAR file ready → ${dist.dir}/${war.name}"/>
+    </target>
+
+    <target name="all"
+            depends="clean, resolve, compile, compile-test, test, report, scan, sbom, war"
+            description="Full build pipeline: clean → resolve → compile → test → report → scan → sbom → war">
+        <echo message=""/>
+        <echo message="---------------------------------------"/>
+        <echo message="       BUILD SUCCESSFUL                "/>
+        <echo message="                                       "/>
+        <echo message="  WAR       → ${dist.dir}/${war.name}"/>
+        <echo message="  HTML      → ${test.report.dir}/index.html"/>
+        <echo message="  CycloneDX → ${sbom.dir}/sbom-cyclonedx.json"/>
+        <echo message="  SPDX      → ${sbom.dir}/sbom-spdx.json"/>
+        <echo message="---------------------------------------"/>
+    </target>
+
+
+</project>

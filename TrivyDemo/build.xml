@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="TrivyDemo" default="deploy" basedir=".">
+
+    <property name="src.dir"    value="src"/>
+    <property name="build.dir"  value="build"/>
+    <property name="dist.dir"   value="dist"/>
+    <property name="war.name"   value="TrivyDemo.war"/>
+
+
+    <property name="tomcat.dir" value="C:/Users/hp/Desktop/tomcat/apache-tomcat-10.1.48/webapps"/>
+
+    <path id="classpath">
+        <fileset dir="lib" includes="*.jar"/>
+    </path>
+
+ 
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${dist.dir}"/>
+    </target>
+
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath" includeantruntime="false"/>
+    </target>
+
+    <target name="war" depends="compile">
+        <mkdir dir="${dist.dir}"/>
+        <war destfile="${dist.dir}/${war.name}" 
+             webxml="WebContent/WEB-INF/web.xml">
+            <fileset dir="WebContent"/>
+            <classes dir="${build.dir}"/>
+            <lib dir="lib"/>
+        </war>
+    </target>
+
+
+    <target name="deploy" depends="war">
+        <copy file="${dist.dir}/${war.name}" todir="${tomcat.dir}"/>
+        <echo message="✅ TrivyDemo.war deployed to Tomcat!"/>
+    </target>
+
+</project>
+

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Trivy Auto-Fixer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0d0d1a;
+      color: #e0e0ff;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    h1 {
+      font-size: 24px;
+      letter-spacing: 4px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #6c63ff;
+      letter-spacing: 3px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #12122a;
+      border: 1px solid #1e1e3f;
+      border-radius: 10px;
+      padding: 28px;
+      width: 100%;
+      max-width: 800px;
+      margin-bottom: 20px;
+    }
+    .card h2 {
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: #555;
+      margin-bottom: 16px;
+    }
+    #scanBtn {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #6c63ff, #ff4081);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      cursor: pointer;
+      max-width: 800px;
+      width: 100%;
+    }
+    #scanBtn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-bottom: 1px solid #1a1a30;
+      font-size: 13px;
+    }
+    .step:last-child { border-bottom: none; }
+    .dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: #222;
+      border: 2px solid #333;
+      flex-shrink: 0;
+    }
+    .dot.active { background: #6c63ff; border-color: #6c63ff; animation: pulse 1s infinite; }
+    .dot.done { background: #00e676; border-color: #00e676; }
+    .dot.error { background: #ff1744; border-color: #ff1744; }
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+    }
+    pre {
+      background: #070710;
+      border: 1px solid #1e1e3f;
+      border-radius: 6px;
+      padding: 16px;
+      font-size: 12px;
+      color: #a8ff78;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    th {
+      text-align: left;
+      padding: 8px 12px;
+      color: #555;
+      letter-spacing: 2px;
+      font-size: 10px;
+      border-bottom: 1px solid #1e1e3f;
+    }
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #1a1a30;
+    }
+    .CRITICAL { color: #ff1744; font-weight: 700; }
+    .HIGH { color: #ff6d00; font-weight: 700; }
+    .fixed { color: #a8ff78; }
+    .old { color: #ff6b6b; }
+    .success-banner {
+      background: #0a2a0a;
+      border: 1px solid #00e676;
+      border-radius: 8px;
+      padding: 16px 24px;
+      color: #00e676;
+      font-size: 13px;
+      letter-spacing: 2px;
+      text-align: center;
+      width: 100%;
+      max-width: 800px;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <h1>🛡️ TRIVY AUTO-FIXER</h1>
+  <div class="subtitle">POWERED BY CLAUDE AI — ONE CLICK SECURITY FIX</div>
+
+  <button id="scanBtn" onclick="runAll()">⚡ SCAN & AUTO-FIX</button>
+
+  <br/>
+
+  <!-- Progress Steps -->
+  <div class="card">
+    <h2>PROGRESS</h2>
+    <div class="step">
+      <div class="dot" id="d1"></div>
+      <span id="s1">Waiting to start...</span>
+    </div>
+    <div class="step">
+      <div class="dot" id="d2"></div>
+      <span id="s2">Waiting to start...</span>
+    </div>
+    <div class="step">
+      <div class="dot" id="d3"></div>
+      <span id="s3">Waiting to start...</span>
+    </div>
+  </div>
+
+  <!-- Trivy Report -->
+  <div class="card hidden" id="reportCard">
+    <h2>📋 TRIVY SCAN REPORT</h2>
+    <pre id="reportBox"></pre>
+  </div>
+
+  <!-- Vulnerabilities Table -->
+  <div class="card hidden" id="vulnCard">
+    <h2>🔍 VULNERABILITIES FOUND</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>LIBRARY</th>
+          <th>CVE</th>
+          <th>SEVERITY</th>
+          <th>OLD VERSION</th>
+          <th>FIXED VERSION</th>
+          <th>ACTION</th>
+        </tr>
+      </thead>
+      <tbody id="vulnTable"></tbody>
+    </table>
+  </div>
+
+  <!-- Fixed POM -->
+  <div class="card hidden" id="pomCard">
+    <h2>✅ UPDATED POM.XML (AUTO-SAVED)</h2>
+    <pre id="pomBox"></pre>
+  </div>
+
+  <!-- Success -->
+  <div class="success-banner hidden" id="successBanner">
+    ✅ pom.xml HAS BEEN AUTOMATICALLY UPDATED WITH FIXED VERSIONS!
+  </div>
+
+<script>
+  function setStep(n, state, msg) {
+    document.getElementById("d" + n).className = "dot " + state;
+    document.getElementById("s" + n).textContent = msg;
+  }
+
+  async function runAll() {
+    const btn = document.getElementById("scanBtn");
+    btn.disabled = true;
+    btn.textContent = "⏳ WORKING...";
+
+    // Hide previous results
+    ["reportCard","vulnCard","pomCard","successBanner"].forEach(id => {
+      document.getElementById(id).classList.add("hidden");
+    });
+
+    try {
+      // STEP 1: Trivy Scan
+      setStep(1, "active", "Running Trivy scan on your project...");
+      setStep(2, "", "Waiting...");
+      setStep(3, "", "Waiting...");
+
+      const scanRes = await fetch("http://localhost:3000/scan");
+      const scanData = await scanRes.json();
+
+      if (!scanData.success) throw new Error("Trivy scan failed");
+
+      setStep(1, "done", "✅ Trivy scan complete!");
+      document.getElementById("reportCard").classList.remove("hidden");
+      document.getElementById("reportBox").textContent = scanData.report;
+
+      // STEP 2: Claude Fix
+      setStep(2, "active", "Sending report to Claude AI for analysis...");
+
+      const fixRes = await fetch("http://localhost:3000/fix", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ report: scanData.report }),
+      });
+      const fixData = await fixRes.json();
+
+      if (!fixData.success) throw new Error(fixData.error);
+
+      setStep(2, "done", "✅ Claude analyzed and fixed all vulnerabilities!");
+
+      // Show vulnerability table
+      document.getElementById("vulnCard").classList.remove("hidden");
+      const tbody = document.getElementById("vulnTable");
+      tbody.innerHTML = "";
+      fixData.result.vulnerabilities.forEach(v => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${v.library}</td>
+            <td style="color:#78d2ff">${v.cve}</td>
+            <td class="${v.severity}">${v.severity}</td>
+            <td class="old">${v.installedVersion}</td>
+            <td class="fixed">${v.fixedVersion}</td>
+            <td style="color:#aaa">${v.action}</td>
+          </tr>`;
+      });
+
+      // STEP 3: Show updated POM
+      setStep(3, "active", "Saving updated pom.xml...");
+
+      const fixedPom = fixData.result.updatedPom.replace(/\\n/g, "\n");
+      document.getElementById("pomCard").classList.remove("hidden");
+      document.getElementById("pomBox").textContent = fixedPom;
+
+      setStep(3, "done", "✅ pom.xml auto-saved to your project!");
+      document.getElementById("successBanner").classList.remove("hidden");
+
+    } catch (err) {
+      setStep(1, "error", "❌ Error: " + err.message);
+    }
+
+    btn.disabled = false;
+    btn.textContent = "⚡ SCAN & AUTO-FIX";
+  }
+</script>
+
+</body>
+</html>

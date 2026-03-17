@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="JUnit Jupiter" tests="70" skipped="0" failures="2" errors="0" time="0.214" hostname="DESKTOP-AD6TP7S" timestamp="2026-03-11T06:30:41">
+<properties>
+<property name="file.encoding" value="UTF-8"/>
+<property name="file.separator" value="\"/>
+<property name="java.class.path" value="C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\compile\gson-2.10.1.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\provided\jakarta.servlet-api-6.0.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\apiguardian-api-1.1.2.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\byte-buddy-1.14.6.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\byte-buddy-agent-1.14.6.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-jupiter-api-5.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-jupiter-engine-5.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-platform-commons-1.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-platform-console-standalone-1.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-platform-engine-1.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\junit-platform-launcher-1.10.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\mockito-core-5.5.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\mockito-junit-jupiter-5.5.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\objenesis-3.3.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\lib\test\opentest4j-1.3.0.jar;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\build\classes\main;C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi\build\classes\test"/>
+<property name="java.class.version" value="65.0"/>
+<property name="java.home" value="C:\Users\hp\.p2\pool\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.10.v20260205-0638\jre"/>
+<property name="java.io.tmpdir" value="C:\Users\hp\AppData\Local\Temp\"/>
+<property name="java.library.path" value="C:\Users\hp\.p2\pool\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.10.v20260205-0638\jre\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:/Users/hp/.p2/pool/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.10.v20260205-0638/jre/bin/server;C:/Users/hp/.p2/pool/plugins/org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.10.v20260205-0638/jre/bin;C:\Users\hp\Desktop\sqlite;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Java\jdk-22\bin;C:\Users\hp\Desktop\java\jdk-25.0.1\bin; C:\Users\hp\Desktop\Program Files\apache-maven-3.9.12\bin;C:\Users\hp\Desktop;;."/>
+<property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+<property name="java.runtime.version" value="21.0.10+7-LTS"/>
+<property name="java.specification.name" value="Java Platform API Specification"/>
+<property name="java.specification.vendor" value="Oracle Corporation"/>
+<property name="java.specification.version" value="21"/>
+<property name="java.vendor" value="Eclipse Adoptium"/>
+<property name="java.vendor.url" value="https://adoptium.net/"/>
+<property name="java.vendor.url.bug" value="https://github.com/adoptium/adoptium-support/issues"/>
+<property name="java.vendor.version" value="Temurin-21.0.10+7"/>
+<property name="java.version" value="21.0.10"/>
+<property name="java.version.date" value="2026-01-20"/>
+<property name="java.vm.compressedOopsMode" value="Zero based"/>
+<property name="java.vm.info" value="mixed mode, sharing"/>
+<property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+<property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+<property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+<property name="java.vm.specification.version" value="21"/>
+<property name="java.vm.vendor" value="Eclipse Adoptium"/>
+<property name="java.vm.version" value="21.0.10+7-LTS"/>
+<property name="jdk.debug" value="release"/>
+<property name="line.separator" value="
+"/>
+<property name="native.encoding" value="Cp1252"/>
+<property name="os.arch" value="amd64"/>
+<property name="os.name" value="Windows 11"/>
+<property name="os.version" value="10.0"/>
+<property name="path.separator" value=";"/>
+<property name="stderr.encoding" value="Cp1252"/>
+<property name="stdout.encoding" value="Cp1252"/>
+<property name="sun.arch.data.model" value="64"/>
+<property name="sun.boot.library.path" value="C:\Users\hp\.p2\pool\plugins\org.eclipse.justj.openjdk.hotspot.jre.full.win32.x86_64_21.0.10.v20260205-0638\jre\bin"/>
+<property name="sun.cpu.endian" value="little"/>
+<property name="sun.cpu.isalist" value="amd64"/>
+<property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+<property name="sun.java.command" value="org.junit.platform.console.ConsoleLauncher --scan-class-path=build/classes/test --reports-dir=build/test-results --details=tree"/>
+<property name="sun.java.launcher" value="SUN_STANDARD"/>
+<property name="sun.jnu.encoding" value="Cp1252"/>
+<property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+<property name="sun.os.patch.level" value=""/>
+<property name="user.country" value="US"/>
+<property name="user.dir" value="C:\Users\hp\eclipse-workspace\newworkplace\calculatorapi"/>
+<property name="user.home" value="C:\Users\hp"/>
+<property name="user.language" value="en"/>
+<property name="user.name" value="hp"/>
+<property name="user.script" value=""/>
+<property name="user.timezone" value="Asia/Calcutta"/>
+<property name="user.variant" value=""/>
+</properties>
+<testcase name="multPositiveNegative()" classname="CalculatorHandlerTest$MultTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multPositiveNegative()]
+display-name: multiplies positive and negative
+]]></system-out>
+</testcase>
+<testcase name="throwsPositiveInfinity()" classname="ValidatorTest$ValidateATests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:throwsPositiveInfinity()]
+display-name: throws when a is positive infinity
+]]></system-out>
+</testcase>
+<testcase name="throwsTooLarge()" classname="ValidatorTest$ValidateATests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:throwsTooLarge()]
+display-name: throws when a exceeds max (1,000,000,001)
+]]></system-out>
+</testcase>
+<testcase name="unknownModulo()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:unknownModulo()]
+display-name: throws for unknown operation 'modulo'
+]]></system-out>
+</testcase>
+<testcase name="multTwoPositives()" classname="CalculatorHandlerTest$MultTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multTwoPositives()]
+display-name: multiplies two positive numbers
+]]></system-out>
+</testcase>
+<testcase name="acceptsSubsetOfKeys()" classname="JsonUtilTest$FromJsonThreeArgTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonThreeArgTests]/[method:acceptsSubsetOfKeys()]
+display-name: accepts JSON with a subset of allowed keys
+]]></system-out>
+</testcase>
+<testcase name="acceptsNegative()" classname="ValidatorTest$ValidateATests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:acceptsNegative()]
+display-name: accepts a normal negative value
+]]></system-out>
+</testcase>
+<testcase name="divideZeroByNumber()" classname="CalculatorHandlerTest$DivideTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideZeroByNumber()]
+display-name: divides zero by a number gives zero
+]]></system-out>
+</testcase>
+<testcase name="acceptsBoundaryMax()" classname="ValidatorTest$ValidateATests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:acceptsBoundaryMax()]
+display-name: accepts the boundary max value 1,000,000,000
+]]></system-out>
+</testcase>
+<testcase name="nullOperation()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:nullOperation()]
+display-name: throws when operation is null
+]]></system-out>
+</testcase>
+<testcase name="division()" classname="ValidatorTest$ValidateOperationTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:division()]
+display-name: 'division' maps to 'divide'
+]]></system-out>
+</testcase>
+<testcase name="errorMentionsFieldName()" classname="JsonUtilTest$FromJsonThreeArgTests" time="0.002">
+<failure message="Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown." type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
+	at JsonUtilTest$FromJsonThreeArgTests.errorMentionsFieldName(JsonUtilTest.java:133)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonThreeArgTests]/[method:errorMentionsFieldName()]
+display-name: error message lists the unknown field name
+]]></system-out>
+</testcase>
+<testcase name="divideNegativeByNegative()" classname="CalculatorHandlerTest$DivideTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideNegativeByNegative()]
+display-name: divides negative by negative gives positive
+]]></system-out>
+</testcase>
+<testcase name="emptyOperation()" classname="CalculatorHandlerTest$UnknownOperationTests" time="0.003">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:UnknownOperationTests]/[method:emptyOperation()]
+display-name: throws IllegalArgumentException for empty string operation
+]]></system-out>
+</testcase>
+<testcase name="subTwoPositives()" classname="CalculatorHandlerTest$SubTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:SubTests]/[method:subTwoPositives()]
+display-name: subtracts two positive numbers
+]]></system-out>
+</testcase>
+<testcase name="subtract()" classname="ValidatorTest$ValidateOperationTests" time="0.022">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:subtract()]
+display-name: 'subtract' maps to 'sub'
+]]></system-out>
+</testcase>
+<testcase name="subEqual()" classname="CalculatorHandlerTest$SubTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:SubTests]/[method:subEqual()]
+display-name: result is zero when a == b
+]]></system-out>
+</testcase>
+<testcase name="subtraction()" classname="ValidatorTest$ValidateOperationTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:subtraction()]
+display-name: 'subtraction' maps to 'sub'
+]]></system-out>
+</testcase>
+<testcase name="throwsNaN()" classname="ValidatorTest$ValidateBTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:throwsNaN()]
+display-name: throws when b is NaN
+]]></system-out>
+</testcase>
+<testcase name="acceptsEmptyObject()" classname="JsonUtilTest$FromJsonThreeArgTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonThreeArgTests]/[method:acceptsEmptyObject()]
+display-name: accepts an empty JSON object
+]]></system-out>
+</testcase>
+<testcase name="multDecimals()" classname="CalculatorHandlerTest$MultTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multDecimals()]
+display-name: multiplies two decimals
+]]></system-out>
+</testcase>
+<testcase name="throwsForUnknownKey()" classname="JsonUtilTest$FromJsonThreeArgTests" time="0.057">
+<failure message="Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown." type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: Expected java.lang.IllegalArgumentException to be thrown, but nothing was thrown.
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:73)
+	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
+	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
+	at JsonUtilTest$FromJsonThreeArgTests.throwsForUnknownKey(JsonUtilTest.java:124)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1596)
+]]></failure>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonThreeArgTests]/[method:throwsForUnknownKey()]
+display-name: throws IllegalArgumentException for an unknown key
+]]></system-out>
+</testcase>
+<testcase name="acceptsBoundaryMin()" classname="ValidatorTest$ValidateATests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:acceptsBoundaryMin()]
+display-name: accepts the boundary min value -1,000,000,000
+]]></system-out>
+</testcase>
+<testcase name="serializesCalculatorResponse()" classname="JsonUtilTest$ToJsonTests" time="0.005">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:ToJsonTests]/[method:serializesCalculatorResponse()]
+display-name: serializes CalculatorResponse correctly
+]]></system-out>
+</testcase>
+<testcase name="acceptsZero()" classname="ValidatorTest$ValidateATests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:acceptsZero()]
+display-name: accepts zero
+]]></system-out>
+</testcase>
+<testcase name="acceptsAllAllowedKeys()" classname="JsonUtilTest$FromJsonThreeArgTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonThreeArgTests]/[method:acceptsAllAllowedKeys()]
+display-name: accepts JSON whose keys are all allowed
+]]></system-out>
+</testcase>
+<testcase name="mul()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:mul()]
+display-name: 'mul' maps to 'mult'
+]]></system-out>
+</testcase>
+<testcase name="acceptsPositive()" classname="ValidatorTest$ValidateATests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:acceptsPositive()]
+display-name: accepts a normal positive value
+]]></system-out>
+</testcase>
+<testcase name="div()" classname="ValidatorTest$ValidateOperationTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:div()]
+display-name: 'div' maps to 'divide'
+]]></system-out>
+</testcase>
+<testcase name="emptyOperation()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:emptyOperation()]
+display-name: throws when operation is empty string
+]]></system-out>
+</testcase>
+<testcase name="addTwoPositives()" classname="CalculatorHandlerTest$AddTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:AddTests]/[method:addTwoPositives()]
+display-name: adds two positive numbers
+]]></system-out>
+</testcase>
+<testcase name="multiplication()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:multiplication()]
+display-name: 'multiplication' maps to 'mult'
+]]></system-out>
+</testcase>
+<testcase name="multByZero()" classname="CalculatorHandlerTest$MultTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multByZero()]
+display-name: multiplies by zero gives zero
+]]></system-out>
+</testcase>
+<testcase name="unknownOperation()" classname="CalculatorHandlerTest$UnknownOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:UnknownOperationTests]/[method:unknownOperation()]
+display-name: throws IllegalArgumentException for unknown operation
+]]></system-out>
+</testcase>
+<testcase name="subZero()" classname="CalculatorHandlerTest$SubTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:SubTests]/[method:subZero()]
+display-name: subtracts zero
+]]></system-out>
+</testcase>
+<testcase name="multiply()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:multiply()]
+display-name: 'multiply' maps to 'mult'
+]]></system-out>
+</testcase>
+<testcase name="throwsNegativeInfinity()" classname="ValidatorTest$ValidateBTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:throwsNegativeInfinity()]
+display-name: throws when b is negative infinity
+]]></system-out>
+</testcase>
+<testcase name="multByOne()" classname="CalculatorHandlerTest$MultTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multByOne()]
+display-name: multiplies by one gives same value
+]]></system-out>
+</testcase>
+<testcase name="throwsNaN()" classname="ValidatorTest$ValidateATests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:throwsNaN()]
+display-name: throws when a is NaN
+]]></system-out>
+</testcase>
+<testcase name="throwsTooSmall()" classname="ValidatorTest$ValidateBTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:throwsTooSmall()]
+display-name: throws when b is below min
+]]></system-out>
+</testcase>
+<testcase name="subNegative()" classname="CalculatorHandlerTest$SubTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:SubTests]/[method:subNegative()]
+display-name: subtracts negative number (effectively adds)
+]]></system-out>
+</testcase>
+<testcase name="throwsForMalformedJson()" classname="JsonUtilTest$FromJsonTwoArgTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonTwoArgTests]/[method:throwsForMalformedJson()]
+display-name: throws JsonSyntaxException for malformed JSON
+]]></system-out>
+</testcase>
+<testcase name="missingFieldsGiveDefaults()" classname="JsonUtilTest$FromJsonTwoArgTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonTwoArgTests]/[method:missingFieldsGiveDefaults()]
+display-name: returns object with defaults for missing fields
+]]></system-out>
+</testcase>
+<testcase name="divide()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:divide()]
+display-name: 'divide' maps to 'divide'
+]]></system-out>
+</testcase>
+<testcase name="acceptsPositive()" classname="ValidatorTest$ValidateBTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:acceptsPositive()]
+display-name: accepts a normal positive value
+]]></system-out>
+</testcase>
+<testcase name="throwsNegativeInfinity()" classname="ValidatorTest$ValidateATests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:throwsNegativeInfinity()]
+display-name: throws when a is negative infinity
+]]></system-out>
+</testcase>
+<testcase name="subResultNegative()" classname="CalculatorHandlerTest$SubTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:SubTests]/[method:subResultNegative()]
+display-name: result is negative when b > a
+]]></system-out>
+</testcase>
+<testcase name="addTwoNegatives()" classname="CalculatorHandlerTest$AddTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:AddTests]/[method:addTwoNegatives()]
+display-name: adds two negative numbers
+]]></system-out>
+</testcase>
+<testcase name="add()" classname="ValidatorTest$ValidateOperationTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:add()]
+display-name: 'add' maps to 'add'
+]]></system-out>
+</testcase>
+<testcase name="addUppercase()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:addUppercase()]
+display-name: 'ADD' (uppercase) maps to 'add'
+]]></system-out>
+</testcase>
+<testcase name="divideNegativeByPositive()" classname="CalculatorHandlerTest$DivideTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideNegativeByPositive()]
+display-name: divides negative by positive
+]]></system-out>
+</testcase>
+<testcase name="addPositiveAndNegative()" classname="CalculatorHandlerTest$AddTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:AddTests]/[method:addPositiveAndNegative()]
+display-name: adds positive and negative number
+]]></system-out>
+</testcase>
+<testcase name="throwsPositiveInfinity()" classname="ValidatorTest$ValidateBTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:throwsPositiveInfinity()]
+display-name: throws when b is positive infinity
+]]></system-out>
+</testcase>
+<testcase name="divideEven()" classname="CalculatorHandlerTest$DivideTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideEven()]
+display-name: divides two positive numbers evenly
+]]></system-out>
+</testcase>
+<testcase name="multTwoNegatives()" classname="CalculatorHandlerTest$MultTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:MultTests]/[method:multTwoNegatives()]
+display-name: multiplies two negatives gives positive
+]]></system-out>
+</testcase>
+<testcase name="blankOperation()" classname="ValidatorTest$ValidateOperationTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:blankOperation()]
+display-name: throws when operation is blank (spaces only)
+]]></system-out>
+</testcase>
+<testcase name="deserializesValidRequest()" classname="JsonUtilTest$FromJsonTwoArgTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:FromJsonTwoArgTests]/[method:deserializesValidRequest()]
+display-name: deserializes a valid CalculatorRequest JSON
+]]></system-out>
+</testcase>
+<testcase name="divideByZeroThrows()" classname="CalculatorHandlerTest$DivideTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideByZeroThrows()]
+display-name: throws ArithmeticException when dividing by zero
+]]></system-out>
+</testcase>
+<testcase name="stripsWhitespace()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:stripsWhitespace()]
+display-name: strips leading/trailing whitespace
+]]></system-out>
+</testcase>
+<testcase name="serializesErrorResponse()" classname="JsonUtilTest$ToJsonTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:ToJsonTests]/[method:serializesErrorResponse()]
+display-name: serializes ErrorResponse correctly
+]]></system-out>
+</testcase>
+<testcase name="serializesNullField()" classname="JsonUtilTest$ToJsonTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:JsonUtilTest]/[nested-class:ToJsonTests]/[method:serializesNullField()]
+display-name: serializes null fields as null in JSON
+]]></system-out>
+</testcase>
+<testcase name="addition()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:addition()]
+display-name: 'addition' maps to 'add'
+]]></system-out>
+</testcase>
+<testcase name="addDecimals()" classname="CalculatorHandlerTest$AddTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:AddTests]/[method:addDecimals()]
+display-name: adds two decimal numbers
+]]></system-out>
+</testcase>
+<testcase name="throwsTooSmall()" classname="ValidatorTest$ValidateATests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateATests]/[method:throwsTooSmall()]
+display-name: throws when a is below min (-1,000,000,001)
+]]></system-out>
+</testcase>
+<testcase name="throwsTooLarge()" classname="ValidatorTest$ValidateBTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:throwsTooLarge()]
+display-name: throws when b exceeds max
+]]></system-out>
+</testcase>
+<testcase name="addZero()" classname="CalculatorHandlerTest$AddTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:AddTests]/[method:addZero()]
+display-name: adds zero to a number
+]]></system-out>
+</testcase>
+<testcase name="acceptsZero()" classname="ValidatorTest$ValidateBTests" time="0.001">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateBTests]/[method:acceptsZero()]
+display-name: accepts zero
+]]></system-out>
+</testcase>
+<testcase name="divideDecimalResult()" classname="CalculatorHandlerTest$DivideTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:CalculatorHandlerTest]/[nested-class:DivideTests]/[method:divideDecimalResult()]
+display-name: divides giving a decimal result
+]]></system-out>
+</testcase>
+<testcase name="unknownPower()" classname="ValidatorTest$ValidateOperationTests" time="0.005">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:unknownPower()]
+display-name: throws for unknown operation 'power'
+]]></system-out>
+</testcase>
+<testcase name="sub()" classname="ValidatorTest$ValidateOperationTests" time="0">
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]/[class:ValidatorTest]/[nested-class:ValidateOperationTests]/[method:sub()]
+display-name: 'sub' maps to 'sub'
+]]></system-out>
+</testcase>
+<system-out><![CDATA[
+unique-id: [engine:junit-jupiter]
+display-name: JUnit Jupiter
+]]></system-out>
+</testsuite>
