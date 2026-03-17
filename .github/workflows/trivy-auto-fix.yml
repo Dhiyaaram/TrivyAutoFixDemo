@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'TrivyDemo/pom.xml'
+  workflow_dispatch:
 
 jobs:
   scan-and-fix:
