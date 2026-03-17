@@ -1,0 +1,91 @@
+name: Trivy Auto-Fix
+
+on:
+  push:
+    paths:
+      - 'TrivyDemo/pom.xml'
+
+jobs:
+  scan-and-fix:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Trivy
+        run: |
+          sudo apt-get install wget apt-transport-https gnupg -y
+          wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+          echo "deb https://aquasecurity.github.io/trivy-repo/deb generic main" | sudo tee /etc/apt/sources.list.d/trivy.list
+          sudo apt-get update
+          sudo apt-get install trivy -y
+
+      - name: Run Trivy Scan
+        run: |
+          trivy fs TrivyDemo/pom.xml --severity HIGH,CRITICAL --format json -o trivy-report.json || true
+
+      - name: Fix with Groq AI
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: |
+          cat > fix.py << 'EOF'
+          import json, urllib.request, os
+
+          # Read Trivy report
+          with open("trivy-report.json") as f:
+              report = f.read()
+
+          # Read pom.xml
+          with open("TrivyDemo/pom.xml") as f:
+              pom = f.read()
+
+          # Call Groq AI
+          prompt = f"You are a Java security expert. Trivy report: {report} pom.xml: {pom} Respond ONLY in JSON: {{\"updatedPom\": \"complete fixed pom.xml with \\n for newlines\"}}"
+
+          payload = json.dumps({
+              "model": "llama-3.3-70b-versatile",
+              "temperature": 0.1,
+              "messages": [
+                  {"role": "system", "content": "Only respond with valid JSON."},
+                  {"role": "user", "content": prompt}
+              ]
+          }).encode()
+
+          req = urllib.request.Request(
+              "https://api.groq.com/openai/v1/chat/completions",
+              data=payload,
+              headers={
+                  "Content-Type": "application/json",
+                  "Authorization": f"Bearer {os.environ['GROQ_API_KEY']}"
+              }
+          )
+
+          with urllib.request.urlopen(req) as res:
+              data = json.loads(res.read())
+
+          content = data["choices"][0]["message"]["content"]
+          content = content.replace("```json", "").replace("```", "").strip()
+          parsed = json.loads(content[content.index("{"):content.rindex("}")+1])
+          fixed_pom = parsed["updatedPom"].replace("\\n", "\n")
+
+          with open("TrivyDemo/pom.xml", "w") as f:
+              f.write(fixed_pom)
+
+          print("pom.xml updated!")
+          EOF
+          python3 fix.py
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "fix: auto-fix vulnerabilities detected by Trivy"
+          title: " Auto-Fix: Vulnerabilities detected and fixed by AI"
+          body: |
+            ## Automatic Security Fix
+            Trivy detected vulnerabilities in `pom.xml`.
+            Groq AI has automatically updated the dependency versions to safe versions.
+            Please review and merge.
+          branch: auto-fix-vulnerabilities
+          base: main
