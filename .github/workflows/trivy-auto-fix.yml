@@ -52,8 +52,8 @@ jobs:
           with open("TrivyDemo/pom.xml") as f:
               pom = f.read()
 
-          report_clean = report.replace("\\", "").replace('"', "'").replace("\n", " ")
-          pom_clean = pom.replace("\\", "").replace('"', "'").replace("\n", " ")
+          report_clean = report.replace("\n", " ").replace('"', "'")
+          pom_clean = pom.replace("\n", " ").replace('"', "'")
 
           body = json.dumps({
               "model": "llama-3.3-70b-versatile",
