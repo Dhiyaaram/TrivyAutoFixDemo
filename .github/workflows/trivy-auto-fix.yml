@@ -51,6 +51,7 @@ jobs:
             }")
 
           echo "Groq response received"
+          echo "$RESPONSE"
           echo "$RESPONSE" | python3 -c "
           import sys, json
           data = json.load(sys.stdin)
