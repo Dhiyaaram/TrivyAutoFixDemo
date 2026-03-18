@@ -31,10 +31,11 @@ jobs:
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: |
-          echo "Secret length: ${#GROQ_API_KEY}"
+          pip install requests -q
 
           python3 << 'PYEOF'
-          import json, urllib.request, urllib.error, sys, os
+          import json, sys, os
+          import requests
 
           groq_key = os.environ["GROQ_API_KEY"]
           print("Key length: " + str(len(groq_key)))
@@ -45,11 +46,15 @@ jobs:
           with open("trivy-report.json") as f:
               report = json.load(f)
 
-          # Extract just vulnerability names from report
           vulns = []
           for result in report.get("Results", []):
               for v in result.get("Vulnerabilities", []):
-                  vulns.append(v.get("VulnerabilityID","") + " " + v.get("PkgName","") + " " + v.get("InstalledVersion","") + " fixed:" + str(v.get("FixedVersion","")))
+                  vulns.append(
+                      v.get("VulnerabilityID","") + " " +
+                      v.get("PkgName","") + " " +
+                      v.get("InstalledVersion","") +
+                      " fixed:" + str(v.get("FixedVersion",""))
+                  )
 
           vuln_text = ", ".join(vulns) if vulns else "no vulnerabilities"
           print("Vulnerabilities: " + vuln_text)
@@ -57,38 +62,39 @@ jobs:
           message = (
               "Fix these vulnerabilities in the pom.xml: " + vuln_text +
               "\n\nCurrent pom.xml:\n" + pom +
-              "\n\nRespond ONLY with this JSON and nothing else: " +
+              "\n\nRespond ONLY with this JSON: " +
               '{"updatedPom": "the complete fixed pom.xml content"}'
           )
 
-          body = json.dumps({
+          headers = {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + groq_key,
+              "User-Agent": "Mozilla/5.0 (compatible; TrivyAutoFixer/1.0)"
+          }
+
+          body = {
               "model": "llama-3.3-70b-versatile",
               "temperature": 0.1,
               "messages": [
                   {"role": "system", "content": "You are a Java security expert. Only respond with valid JSON. No markdown."},
                   {"role": "user", "content": message}
               ]
-          }).encode("utf-8")
+          }
 
-          req = urllib.request.Request(
+          res = requests.post(
               "https://api.groq.com/openai/v1/chat/completions",
-              data=body,
-              headers={
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer " + groq_key
-              },
-              method="POST"
+              headers=headers,
+              json=body,
+              timeout=60
           )
 
-          try:
-              with urllib.request.urlopen(req) as res:
-                  data = json.loads(res.read().decode())
-                  print("Groq responded successfully!")
-          except urllib.error.HTTPError as e:
-              print("HTTP Error: " + str(e.code))
-              print(e.read().decode())
+          print("Status: " + str(res.status_code))
+
+          if res.status_code != 200:
+              print("Error: " + res.text)
               sys.exit(1)
 
+          data = res.json()
           content = data["choices"][0]["message"]["content"]
           content = content.replace("```json", "").replace("```", "").strip()
           start = content.index("{")
@@ -106,7 +112,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: "fix: auto-fix vulnerabilities detected by Trivy"
-          title: " Auto-Fix: Vulnerabilities detected and fixed by AI"
+          title: "🛡️ Auto-Fix: Vulnerabilities detected and fixed by AI"
           body: |
             ## Automatic Security Fix
 
