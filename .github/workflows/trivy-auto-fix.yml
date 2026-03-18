@@ -110,20 +110,19 @@ jobs:
           print("pom.xml updated successfully!")
           PYEOF
 
-      - name: Check changes
+      - name: Commit fixed pom.xml
         run: |
-          echo "=== Current pom.xml ==="
-          cat TrivyDemo/pom.xml
-          echo "=== Git status ==="
-          git status
-          echo "=== Git diff ==="
-          git diff TrivyDemo/pom.xml
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git checkout -b auto-fix-vulnerabilities || git checkout auto-fix-vulnerabilities
+          git add TrivyDemo/pom.xml
+          git commit -m "fix: auto-fix vulnerabilities detected by Trivy"
+          git push origin auto-fix-vulnerabilities --force
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "fix: auto-fix vulnerabilities detected by Trivy"
           title: "🛡️ Auto-Fix: Vulnerabilities detected and fixed by AI"
           body: |
             ## Automatic Security Fix
@@ -131,7 +130,11 @@ jobs:
             Trivy detected vulnerabilities in `pom.xml`.
             Groq AI has automatically updated the dependency versions to safe versions.
 
+            **Changes made:**
+            - gson: 2.8.0 → 2.8.9
+            - commons-text: 1.9 → 1.10.0
+            - log4j: 1.2.17 → 2.0
+
             Please review and merge.
           branch: auto-fix-vulnerabilities
           base: main
-          delete-branch: true
