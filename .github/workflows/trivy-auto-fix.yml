@@ -102,10 +102,22 @@ jobs:
           parsed = json.loads(content[start:end])
           fixed_pom = parsed["updatedPom"].replace("\\n", "\n")
 
+          print("Fixed pom.xml:")
+          print(fixed_pom)
+
           with open("TrivyDemo/pom.xml", "w") as f:
               f.write(fixed_pom)
           print("pom.xml updated successfully!")
           PYEOF
+
+      - name: Check changes
+        run: |
+          echo "=== Current pom.xml ==="
+          cat TrivyDemo/pom.xml
+          echo "=== Git status ==="
+          git status
+          echo "=== Git diff ==="
+          git diff TrivyDemo/pom.xml
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
